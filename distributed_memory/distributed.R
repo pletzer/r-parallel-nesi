@@ -1,16 +1,20 @@
 library(doMPI, quiet = TRUE)
 
+# let the user set the number of work tasks
 args <- commandArgs(trailingOnly=TRUE)
-njobs <- 50
+ntasks <- 50
 if (length(args) >= 1) {
-    njobs <- strtoi(args[1])
+    ntasks <- strtoi(args[1])
 }
 
-cl <- startMPIcluster(verbose = TRUE)
+# no need to specify the number of workers,
+# it will be determined automatically
+cl <- startMPIcluster()
+
 registerDoMPI(cl)
 
-# njobs calculations, store the result in 'x' 
-x <- foreach(z = 1000000:(1000000 + njobs), .combine = 'c') %dopar% { 
+# ntasks calculations, store the result in 'x' 
+x <- foreach(z = 1000000:(1000000 + ntasks), .combine = 'c') %dopar% { 
     sum(rnorm(z))
 }
 

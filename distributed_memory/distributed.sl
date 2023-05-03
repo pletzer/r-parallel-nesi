@@ -5,15 +5,15 @@
 #SBATCH --output %x.%j.out 
 #SBATCH --error %x.%j.err
 
-njobs="50"
+ntasks="50"
 if [ "$#" -eq 1 ]; then
-    njobs="$1"
+    ntasks="$1"
 fi
 
+module purge
 module load R
 module load OpenMPI
 
-echo "Executing $njobs jobs in R..." 
-srun Rscript distributed.R $njobs
+echo "Executing $ntasks tasks in R..." 
+srun Rscript distributed.R $ntasks
 echo "R finished."
-
