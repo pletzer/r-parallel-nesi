@@ -13,4 +13,4 @@ x <- foreach(z = 1000000:1000050, .combine = 'c') %dopar% {
 closeCluster(cl)
 #mpi.exit()
 print(x)
-mpi.quit()
+mpi.exit()
