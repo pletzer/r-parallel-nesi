@@ -1,5 +1,3 @@
-library(foreach)
-library(doParallel)
 library(doMPI, quiet = TRUE)
 
 cl <- startMPIcluster(verbose = TRUE)
