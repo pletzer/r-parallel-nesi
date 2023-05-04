@@ -63,6 +63,6 @@
         cat table.txt
         # create plot
         module load R
-        Rscript analyse.R
+        Rscript $BIN_DIR/analyse.R
     """
 
