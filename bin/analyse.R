@@ -6,7 +6,8 @@ data <- read.csv('table.txt', sep='|')
 colnames(data) <- c('cycle', 'method', 'submit_num', 'start_time', 'end_time')
 
 # remove rows we are not interested in
-d2 <- data[data$method %in% c('serial', 'shared', 'distributed'),]
+d2 <- data[!(rownames(data) %in% c('install', 'analyse')),]
+#d2 <- data[data$method %in% c('serial', 'shared', 'distributed'),]
 
 # turn the strings into date time objects
 start_time <- as.POSIXct(d2[, 4], format="%Y-%m-%dT%H:%M:%S")
