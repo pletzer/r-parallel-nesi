@@ -11,6 +11,7 @@
        --account = nesi99999 # CHANGE
     [[[environment]]]
       TOP_DIR="/nesi/nobackup/pletzera/r-parallel-nesi/" # CHANGE
+      NTASKS=10
       BIN_DIR=$CYLC_WORKFLOW_SHARE_DIR/bin
   [[install]]
         script = """
@@ -26,7 +27,7 @@
     script = """
           module purge
           module load R
-          srun Rscript $BIN_DIR/serial.R 10
+          srun Rscript $BIN_DIR/serial.R $NTASKS
       """
       [[[directives]]] # specific SLURM option for this task
         --ntasks = 1
@@ -35,7 +36,7 @@
     script = """
           module purge
           module load R
-          srun Rscript $BIN_DIR/shared.R 10
+          srun Rscript $BIN_DIR/shared.R $NTASKS
       """
       [[[directives]]] # specific SLURM option for this task
         --ntasks = 1
@@ -45,7 +46,7 @@
     script = """
           module purge
           module load R
-          srun Rscript $BIN_DIR/distributed.R 10
+          srun Rscript $BIN_DIR/distributed.R $NTASKS
       """
       [[[directives]]] # specific SLURM option for this task
         --ntasks = 10
