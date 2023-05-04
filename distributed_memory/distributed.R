@@ -9,7 +9,7 @@ if (length(args) >= 1) {
 
 # no need to specify the number of workers,
 # it will be determined automatically
-cl <- startMPIcluster()
+cl <- startMPIcluster(bcast = FALSE)
 
 registerDoMPI(cl)
 

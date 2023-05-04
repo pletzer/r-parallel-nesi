@@ -1,8 +1,12 @@
 [scheduling] # Define the tasks and when they should run
   [[graph]]
     R1 = """ # R1 means run this graph once
-      install => serial & shrd-nw10 & dist-nw10 & dist-nw10-openmpi & dist-nw100
-      serial & shrd-nw10 & dist-nw10 & dist-nw10-openmpi & dist-nw100 => analyse # Defines the task graph
+      install => serial & 
+                 shrd-nw10 & shrd-nw20 & shrd-nw50 &
+                 dist-nw10 & dist-nw20 & dist-nw50 & dist-nw100 & dist-nw10-openmpi
+      serial & 
+      shrd-nw10  & shrd-nw20 & shrd-nw50 & 
+      dist-nw10 & dist-nw20 & dist-nw50 & dist-nw100 & dist-nw10-openmpi => analyse
     """
 [runtime] # Define what each task should run
   [[root]] # Default settings inherited by all tasks
@@ -44,8 +48,24 @@
       [[[directives]]] # specific SLURM option for this task
         --ntasks = 1
         --cpus-per-task = 10
-        --hint = nomultithread
-        --partition = milan
+  [[shrd-nw20]]
+    script = """
+          module purge
+          module load R
+          srun Rscript $BIN_DIR/shared.R $NTASKS
+      """
+      [[[directives]]] # specific SLURM option for this task
+        --ntasks = 1
+        --cpus-per-task = 20
+  [[shrd-nw50]]
+    script = """
+          module purge
+          module load R
+          srun Rscript $BIN_DIR/shared.R $NTASKS
+      """
+      [[[directives]]] # specific SLURM option for this task
+        --ntasks = 1
+        --cpus-per-task = 50
   [[dist-nw10]]
     script = """
           module purge
@@ -54,6 +74,24 @@
       """
       [[[directives]]] # specific SLURM option for this task
         --ntasks = 10
+        --cpus-per-task = 1
+  [[dist-nw20]]
+    script = """
+          module purge
+          module load R
+          srun Rscript $BIN_DIR/distributed.R $NTASKS
+      """
+      [[[directives]]] # specific SLURM option for this task
+        --ntasks = 20
+        --cpus-per-task = 1
+  [[dist-nw50]]
+    script = """
+          module purge
+          module load R
+          srun Rscript $BIN_DIR/distributed.R $NTASKS
+      """
+      [[[directives]]] # specific SLURM option for this task
+        --ntasks = 50
         --cpus-per-task = 1
   [[dist-nw100]]
     script = """
