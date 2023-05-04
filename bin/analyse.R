@@ -20,5 +20,8 @@ ggplot(d2, aes(x=method, y=exec_time, fill=method)) + geom_bar(stat = "identity"
 
 # save
 top_dir <- Sys.getenv('TOP_DIR', unset = '.')
-filename <- paste0(top_dir, '/out.png')
+filename <- paste0(top_dir, '/results.png')
 ggsave(filename, device = 'png')
+
+resultfile <- paste0(top_dir, '/results.csv')
+write.csv(d2, resultfile)
