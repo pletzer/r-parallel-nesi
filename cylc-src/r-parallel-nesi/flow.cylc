@@ -19,7 +19,7 @@
 # one to continuously update the scripts without affecting a currently running 
 # workflow
           mkdir -p $BIN_DIR
-          cp -r $TOP_DIR/*/*.R $BIN_DIR
+          cp $TOP_DIR/*/*.R $BIN_DIR
           echo "BIN_DIR = $BIN_DIR"
           echo "scripts in $BIN_DIR: $(ls $BIN_DIR)"
         """
@@ -61,5 +61,8 @@
     script = """
         sqlite3 $CYLC_WORKFLOW_RUN_DIR/log/db "select cycle, name, submit_num, time_run, time_run_exit from task_jobs;" > table.txt
         cat table.txt
+        # create plot
+        module load R
+        Rscript analyse.R
     """
 
