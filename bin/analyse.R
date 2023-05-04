@@ -7,7 +7,6 @@ colnames(data) <- c('job_id', 'cycle', 'method', 'submit_num', 'start_time', 'en
 
 # remove rows we are not interested in
 d2 <- data[!(rownames(data) %in% c('install', 'analyse')),]
-#d2 <- data[data$method %in% c('serial', 'shared', 'distributed'),]
 
 # turn the strings into date time objects
 start_time <- as.POSIXct(d2$start_time, format="%Y-%m-%dT%H:%M:%S")
@@ -17,7 +16,13 @@ end_time <- as.POSIXct(d2$end_time, format="%Y-%m-%dT%H:%M:%S")
 d2$exec_time <- as.numeric(end_time - start_time) # in sec
 
 # plot
-ggplot(d2, aes(x=method, y=exec_time, fill=method)) + geom_bar(stat = "identity")
+args <- commandArgs(trailingOnly=TRUE)
+ntasks <- 0
+if (length(args) >= 1) {
+    ntasks <- strtoi(args[1])
+}
+p <- ggplot(d2, aes(x=method, y=exec_time, fill=method)) + geom_bar(stat = "identity")
+p + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + ggtitle(sprintf("NTASKS=%d", ntasks))
 
 # save
 top_dir <- Sys.getenv('TOP_DIR', unset = '.')

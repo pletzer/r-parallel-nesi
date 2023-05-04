@@ -15,9 +15,10 @@
        --account = nesi99999 # CHANGE
        --hint = nomultithread
        --partition = milan
+       --nodes = 1
     [[[environment]]]
       TOP_DIR="/nesi/nobackup/pletzera/r-parallel-nesi/" # CHANGE
-      NTASKS=1000
+      NTASKS=10000
       BIN_DIR=$CYLC_WORKFLOW_SHARE_DIR/bin
   [[install]]
         script = """
@@ -119,6 +120,6 @@
         cat table.txt
         # create plot
         module load R
-        Rscript $BIN_DIR/analyse.R
+        Rscript $BIN_DIR/analyse.R $NTASKS
     """
 
