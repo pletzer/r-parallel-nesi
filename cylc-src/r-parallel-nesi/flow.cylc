@@ -23,6 +23,7 @@
           echo "BIN_DIR = $BIN_DIR"
           echo "scripts in $BIN_DIR: $(ls $BIN_DIR)"
         """
+        platform = localhost
   [[serial]]
     script = """
           module purge
