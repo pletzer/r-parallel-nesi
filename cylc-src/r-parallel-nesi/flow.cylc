@@ -3,10 +3,10 @@
     R1 = """ # R1 means run this graph once
       install => serial & 
                  shrd-nw10 & shrd-nw20 & shrd-nw50 &
-                 dist-nw10 & dist-nw20 & dist-nw50 & dist-nw100 & dist-nw10-openmpi
+                 dist-nw10 & dist-nw20 & dist-nw50 & dist-nw100 & dist-nw10-openmpi & dist-nw10-large
       serial & 
       shrd-nw10  & shrd-nw20 & shrd-nw50 & 
-      dist-nw10 & dist-nw20 & dist-nw50 & dist-nw100 & dist-nw10-openmpi => analyse
+      dist-nw10 & dist-nw20 & dist-nw50 & dist-nw100 & dist-nw10-openmpi & dist-nw10-large => analyse
     """
 [runtime] # Define what each task should run
   [[root]] # Default settings inherited by all tasks
@@ -103,6 +103,16 @@
       [[[directives]]] # specific SLURM option for this task
         --ntasks = 100
         --cpus-per-task = 1
+  [[dist-nw10-large]]
+    script = """
+          module purge
+          module load R
+          srun Rscript $BIN_DIR/distributed.R $NTASKS
+      """
+      [[[directives]]] # specific SLURM option for this task
+        --ntasks = 10
+        --cpus-per-task = 1
+        --partition = large
   [[dist-nw10-openmpi]]
     script = """
           module purge
