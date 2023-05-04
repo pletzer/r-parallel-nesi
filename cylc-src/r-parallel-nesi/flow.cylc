@@ -1,14 +1,16 @@
 [scheduling] # Define the tasks and when they should run
   [[graph]]
     R1 = """ # R1 means run this graph once
-      install => serial & shared & distributed
-      serial & shared & distributed => analyse # Defines the task graph
+      install => serial & shrd-nw10 & dist-nw10 & dist-nw10-openmpi
+      serial & shrd-nw10 & dist-nw10 & dist-nw10-openmpi => analyse # Defines the task graph
     """
 [runtime] # Define what each task should run
   [[root]] # Default settings inherited by all tasks
     platform = mahuika-slurm # Run "cylc conf" to see platforms. 
     [[[directives]]] # Default SLURM options for the tasks below
        --account = nesi99999 # CHANGE
+       --hint = nomultithread
+       --partition = milan
     [[[environment]]]
       TOP_DIR="/nesi/nobackup/pletzera/r-parallel-nesi/" # CHANGE
       NTASKS=1000
@@ -33,8 +35,7 @@
       [[[directives]]] # specific SLURM option for this task
         --ntasks = 1
         --cpus-per-task = 1
-        --partition = milan
-  [[shared]]
+  [[shrd-nw10]]
     script = """
           module purge
           module load R
@@ -45,7 +46,7 @@
         --cpus-per-task = 10
         --hint = nomultithread
         --partition = milan
-  [[distributed]]
+  [[dist-nw10]]
     script = """
           module purge
           module load R
@@ -54,8 +55,16 @@
       [[[directives]]] # specific SLURM option for this task
         --ntasks = 10
         --cpus-per-task = 1
-        --hint = nomultithread
-        --partition = milan
+  [[dist-nw10-openmpi]]
+    script = """
+          module purge
+          module load R
+          module load OpenMPI
+          srun Rscript $BIN_DIR/distributed.R $NTASKS
+      """
+      [[[directives]]] # specific SLURM option for this task
+        --ntasks = 10
+        --cpus-per-task = 1
   [[analyse]]
     platform = localhost
     script = """
