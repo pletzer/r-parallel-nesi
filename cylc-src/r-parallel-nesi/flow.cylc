@@ -115,7 +115,7 @@
   [[analyse]]
     platform = localhost
     script = """
-        sqlite3 $CYLC_WORKFLOW_RUN_DIR/log/db "select cycle, name, submit_num, time_run, time_run_exit from task_jobs;" > table.txt
+        sqlite3 $CYLC_WORKFLOW_RUN_DIR/log/db "select job_id, cycle, name, submit_num, time_run, time_run_exit from task_jobs;" > table.txt
         cat table.txt
         # create plot
         module load R
