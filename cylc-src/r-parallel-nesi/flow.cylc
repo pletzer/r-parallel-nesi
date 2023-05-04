@@ -1,0 +1,56 @@
+[scheduling] # Define the tasks and when they should run
+  [[graph]]
+    R1 = """ # R1 means run this graph once
+      install => serial & shared & distributed
+      serial & shared & distributed => analyse # Defines the task graph
+    """
+[runtime] # Define what each task should run
+  [[root]] # Default settings inherited by all tasks
+    platform = mahuika-slurm # Run "cylc conf" to see platforms. 
+    [[[directives]]] # Default SLURM options for the tasks below
+       --account = nesi99999 # CHANGE
+    [[[environment]]]
+      TOP_DIR="/nesi/nobackup/pletzera/r-parallel-nesi/" # CHANGE
+      BIN_DIR=$CYLC_WORKFLOW_SHARE_DIR/bin
+  [[install]]
+        script = """
+# copy the R scripts to a directory that belongs to the workflow, this allows 
+# one to continuously update the scripts without affecting a currently running 
+# workflow
+          mkdir -p $BIN_DIR
+          cp -r $TOP_DIR/*/*.R $BIN_DIR
+          echo "BIN_DIR = $BIN_DIR"
+          echo "scripts in $BIN_DIR: $(ls $BIN_DIR)"
+        """
+  [[serial]]
+    script = """
+          module purge
+          module load R
+          srun Rscript $BIN_DIR/serial.R 10
+      """
+      [[[directives]]] # specific SLURM option for this task
+        --ntasks = 1
+        --cpus-per-task = 1
+  [[shared]]
+    script = """
+          module purge
+          module load R
+          srun Rscript $BIN_DIR/shared.R 10
+      """
+      [[[directives]]] # specific SLURM option for this task
+        --ntasks = 1
+        --cpus-per-task = 10
+        --hint = nomultithread
+  [[distributed]]
+    script = """
+          module purge
+          module load R
+          srun Rscript $BIN_DIR/distributed.R 10
+      """
+      [[[directives]]] # specific SLURM option for this task
+        --ntasks = 10
+        --cpus-per-task = 1
+        --hint = nomultithread
+  [[analyse]]
+    script = "echo running analyse..."
+
