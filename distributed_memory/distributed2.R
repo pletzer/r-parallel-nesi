@@ -21,6 +21,7 @@ x <- foreach(z = 1000000:(1000000 + ntasks), .combine=c) %dopar% {
     sum(rnorm(z))
 }
 tock <- proc.time() - tick
+print('done with the loop')
  
 #mpi.close.Rslaves()
 #snow::stopCluster(cl)
