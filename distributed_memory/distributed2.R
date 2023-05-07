@@ -16,16 +16,14 @@ print(cl)
 
 registerDoParallel(cl)
  
-tick <- proc.time()
+#tick <- proc.time()
 x <- foreach(z = 1000000:(1000000 + ntasks), .combine=c) %dopar% {
     sum(rnorm(z))
 }
-tock <- proc.time() - tick
+#tock <- proc.time() - tick
 print('done with the loop')
+print(x)
  
 #mpi.close.Rslaves()
-#snow::stopCluster(cl)
-Rmpi::mpi.finalize()
-
-cat("\nforeach w/ Rmpi test times using", slaves, "MPI slaves: \n")
-tock
+snow::stopCluster(cl)
+mpi.quit()

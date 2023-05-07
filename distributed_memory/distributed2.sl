@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -N 1 -n 4
-##SBATCH -p milan
+#SBATCH -p milan
 #SBATCH -t 00:10:00
 #SBATCH -J distributed2
 
