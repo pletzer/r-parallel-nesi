@@ -17,7 +17,12 @@ export FI_LOG_LEVEL=debug
 #export I_MPI_SPAWN_EXPERIMENTAL=1
 
 #export I_MPI_FABRICS=shm:ofi
+#export I_MPI_PMI_LIBRARY=$SLURM_I_MPI_PMI_LIBRARY 
 
-export I_MPI_PMI_LIBRARY=$SLURM_I_MPI_PMI_LIBRARY 
-R --no-save -f distributed2.R 100
+# the recommended way to start MPI
+srun Rscript distributed2.R 100
+# alternatively
+#mpirun np 1 distributed2.R 100
+# or maybe?
+#R --no-save -f distributed2.R 100
 
