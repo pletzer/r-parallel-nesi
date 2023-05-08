@@ -19,7 +19,8 @@ x <- foreach(z = 1000000:(1000000 + ntasks), .combine=c) %dopar% {
     sum(rnorm(z))
 }
 print('done with the loop')
- 
+
+# this will detach MPI
 snow::stopCluster(cl)
+#mpi.exit()
 print(x)
-mpi.quit()
