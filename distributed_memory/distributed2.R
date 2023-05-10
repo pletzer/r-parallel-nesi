@@ -11,7 +11,7 @@ if (length(args) >= 1) {
 slaves <- as.numeric(Sys.getenv(c("SLURM_NTASKS"))) - 1
 print(sprintf("number of slaves = %d", slaves))
 
-cl <- makeCluster(slaves, type="MPI")
+cl <- snow::makeCluster(slaves, type="MPI")
 
 registerDoParallel(cl)
  
