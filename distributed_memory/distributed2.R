@@ -11,7 +11,7 @@ if (length(args) >= 1) {
 slaves <- as.numeric(Sys.getenv(c("SLURM_NTASKS"))) - 1
 print(sprintf("number of slaves = %d", slaves))
 
-cl <- snow::makeCluster(slaves, type="MPI")
+cl <- snow::makeCluster(slaves, type = "MPI")
 
 registerDoParallel(cl)
  
@@ -22,5 +22,4 @@ print('done with the loop')
 
 # this will detach MPI
 snow::stopCluster(cl)
-#mpi.exit()
 print(x)
