@@ -1,4 +1,5 @@
-library(doMPI, quiet = TRUE)
+library(doParallel, quiet = TRUE)
+library(Rmpi)
 
 # let the user set the number of work tasks
 args <- commandArgs(trailingOnly=TRUE)
@@ -7,19 +8,18 @@ if (length(args) >= 1) {
     ntasks <- strtoi(args[1])
 }
 
-# no need to specify the number of workers,
-# it will be determined automatically
-# comm = 0 will not spawn the workers
-cl <- startMPIcluster(comm = 0, bcast = TRUE)
+slaves <- as.numeric(Sys.getenv(c("SLURM_NTASKS"))) - 1
+print(sprintf("number of slaves = %d", slaves))
 
-registerDoMPI(cl)
+cl <- snow::makeCluster(slaves, type = "MPI")
 
-# ntasks calculations, store the result in 'x' 
-x <- foreach(z = 1000000:(1000000 + ntasks), .combine = 'c') %dopar% { 
+registerDoParallel(cl)
+ 
+x <- foreach(z = 1000000:(1000000 + ntasks), .combine=c) %dopar% {
     sum(rnorm(z))
 }
+print('done with the loop')
 
-closeCluster(cl)
-mpi.finalize()
+# this will detach MPI
+snow::stopCluster(cl)
 print(x)
-

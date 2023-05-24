@@ -1,31 +1,22 @@
-#!/bin/bash -e 
-#SBATCH --job-name distributed 
-#SBATCH --time 00:10:00 
-#SBATCH --ntasks 12 
-#SBATCH --output %x.%j.out 
-#SBATCH --error %x.%j.err
-
-ntasks="50"
-if [ "$#" -eq 1 ]; then
-    ntasks="$1"
-fi
+#!/bin/bash
+#SBATCH -N 1 -n 4
+#SBATCH -p milan
+#SBATCH -t 00:10:00
+#SBATCH -J distributed2
+#SBATCH --error %x-%j.err
+#SBATCH --output %x-%j.out
+#SBATCH --hint=nomultithread
 
 module purge
+module load intel
+module load impi
 module load R
-#module load impi
-#module load OpenMPI
-
-echo "Executing $ntasks tasks in R..."
 
 #export I_MPI_DEBUG=30
 #export FI_LOG_LEVEL=debug
-#export FI_PROVIDER=mlx
-#export I_MPI_SPAWN=on
-#export FI_MLX_NS_ENABLE=1
-#export I_MPI_SPAWN_EXPERIMENTAL=1
+#export I_MPI_HYDRA_DEBUG=yes
 
-#export I_MPI_FABRICS=shm:ofi
-#export I_MPI_FABRICS=shm
+# https://community.intel.com/t5/Intel-oneAPI-HPC-Toolkit/MPI-Init-error-under-Slurm/m-p/1367321#M9275
+#https://www.intel.com/content/www/us/en/docs/mpi-library/developer-reference-linux/2021-8/global-hydra-options.html#SECTION_FF7731B57A484C37BC16862C9ABC0866
+I_MPI_SPAWN=on I_MPI_PIN_RESPECT_CPUSET=0 FI_PROVIDER=mlx mpirun -bootstrap slurm Rscript distributed2.R 100
 
-srun Rscript distributed.R $ntasks
-echo "R finished."
