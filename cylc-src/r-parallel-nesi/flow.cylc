@@ -71,10 +71,8 @@
   [[analyse]]
     platform = localhost
     script = """
-        sqlite3 $CYLC_WORKFLOW_RUN_DIR/log/db "select job_id, cycle, name, submit_num, time_run, time_run_exit from task_jobs;" > table.txt
-        cat table.txt
-        # create plot
-        module load R
-        Rscript $BIN_DIR/analyse.R $NTASKS
+        ml purge
+        ml Python
+        python analyse.py
     """
 

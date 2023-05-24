@@ -23,6 +23,7 @@ exec_times = []
 job_ids = []
 nworkers = []
 success = []
+methods = []
 for sf in status_files:
   print(sf)
   init_time = float('inf')
@@ -30,12 +31,15 @@ for sf in status_files:
   job_id = -1
   nw = 0
   scs = '?'
+  mth = 'serial'
   m = re.search(r'shrd(\d+)\_', sf)
   if m:
     nw = int(m.group(1)) - 1
+    mth = 'shrd'
   m = re.search(r'dist(\d+)\_', sf)
   if m:
     nw = int(m.group(1)) - 1
+    mth = 'dist'
 
   for line in open(sf).readlines():
 
@@ -59,6 +63,7 @@ for sf in status_files:
   job_ids.append(job_id)
   nworkers.append(nw)
   success.append(scs)
+  methods.append(mth)
   try:
     exec_times.append( (exit_time - init_time).seconds )
   except:
@@ -67,14 +72,15 @@ for sf in status_files:
 df = pd.DataFrame({'job_id': job_ids, 
                    'exec time (s)': exec_times, 
 		   'nworkers': nworkers,
-		   'success': success})
+		   'success': success,
+		   'method': methods})
 df.to_csv(f'{case}.csv')
 
 # print all the runs that failed
 print(df[df.success == 'EXIT'])
 
 print(df)
-sn.barplot(data=df[df.success == 'SUCCEEDED'], x='job_id', y='exec time (s)', hue='nworkers', errorbar='sd')
+sn.barplot(data=df[df.success == 'SUCCEEDED'], x='method', y='exec time (s)', hue='nworkers', errorbar='sd')
 plt.savefig(f'{case}.png', bbox_inches="tight")
 
 
