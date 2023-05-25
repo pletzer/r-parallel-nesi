@@ -31,15 +31,17 @@ for sf in status_files:
   job_id = -1
   nw = 0
   scs = '?'
-  mth = 'serial'
-  m = re.search(r'shrd(\d+)\_', sf)
-  if m:
-    nw = int(m.group(1)) - 1
-    mth = 'shrd'
-  m = re.search(r'dist(\d+)\_', sf)
-  if m:
-    nw = int(m.group(1)) - 1
-    mth = 'dist'
+  mth = '?'
+
+  casename = sf.split('/')[-3]
+  m = re.search(r'([a-z]+)(\d*)_m(\d+)', casename)
+  if not m:
+    print(f'ERROR: failed to extract method and nworkers from {casename}')
+  else:
+    print(f'matched {m.group(1)} and {m.group(2)}')
+    mth = m.group(1)
+    if mth != 'serial':
+      nw = int(m.group(2)) - 1
 
   for line in open(sf).readlines():
 

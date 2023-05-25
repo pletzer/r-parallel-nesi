@@ -10,8 +10,8 @@
       install => serial<m>
       serial<m> => analyse
       {% for N in NS %}
-        install => shrd{{ N }}<m> & dist{{ N }}<m>
-        shrd{{ N }}<m> & dist{{ N }}<m> => analyse
+        install => shrd{{ N }}<m> & dist{{ N }}<m> & distmlx{{ N }}<m> & distsshbroadwell{{ N }}<m>
+        shrd{{ N }}<m> & dist{{ N }}<m> & distmlx{{ N }}<m> & distsshbroadwell{{ N }}<m> => analyse
       {% endfor %}
     """
 [runtime] # Define what each task should run
@@ -21,6 +21,7 @@
        --account = nesi99999 # CHANGE
        --hint = nomultithread
        --partition = milan
+       --mem = 10gb
     [[[environment]]]
       TOP_DIR="/nesi/nobackup/pletzera/r-parallel-nesi/" # CHANGE
       NTASKS=10000
@@ -61,12 +62,35 @@
           module load R impi
           export I_MPI_SPAWN=on
           export I_MPI_PIN_RESPECT_CPUSET=0
+          mpirun -bootstrap slurm Rscript $BIN_DIR/distributed.R $NTASKS
+      """
+      [[[directives]]] # specific SLURM option for this task
+        --ntasks = {{ N }}
+        --cpus-per-task = 1
+  [[distmlx{{ N }}<m>]]
+    script = """ 
+          module purge 
+          module load R impi
+          export I_MPI_SPAWN=on
+          export I_MPI_PIN_RESPECT_CPUSET=0
           export FI_PROVIDER=mlx
           mpirun -bootstrap slurm Rscript $BIN_DIR/distributed.R $NTASKS
       """
       [[[directives]]] # specific SLURM option for this task
         --ntasks = {{ N }}
         --cpus-per-task = 1
+  [[distsshbroadwell{{ N }}<m>]]
+    script = """ 
+          module purge 
+          module load R impi
+          export I_MPI_SPAWN=on
+          export I_MPI_PIN_RESPECT_CPUSET=0
+          mpirun -bootstrap ssh Rscript $BIN_DIR/distributed.R $NTASKS
+      """
+      [[[directives]]] # specific SLURM option for this task
+        --ntasks = {{ N }}
+        --cpus-per-task = 1
+        --partition = large
   {% endfor %}
   [[analyse]]
     platform = localhost
