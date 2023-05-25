@@ -21,7 +21,7 @@
        --account = nesi99999 # CHANGE
        --hint = nomultithread
        --partition = milan
-       --mem = 10gb
+       --mem = 30gb
     [[[environment]]]
       TOP_DIR="/nesi/nobackup/pletzera/r-parallel-nesi/" # CHANGE
       NTASKS=10000

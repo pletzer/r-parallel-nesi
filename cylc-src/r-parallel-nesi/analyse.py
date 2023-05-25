@@ -83,6 +83,7 @@ print(df[df.success == 'EXIT'])
 
 print(df)
 sn.barplot(data=df[df.success == 'SUCCEEDED'], x='method', y='exec time (s)', hue='nworkers', errorbar='sd')
+plt.xticks(rotation=45)
 plt.savefig(f'{case}.png', bbox_inches="tight")
 
 
